@@ -1,7 +1,7 @@
-import axios from 'axios';
+import axios from './customize-axios';
 
-const fetchAllApi = () => {
-    return axios.get('https://reqres.in/api/users?page=1');
+const fetchAllApi = (page) => {
+    return axios.get(`api/users?page=${page}`);
 };
 
 export { fetchAllApi };
