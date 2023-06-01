@@ -2,11 +2,25 @@ import { useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import { fetchAllApi } from '../services/userService';
 import ReactPaginate from 'react-paginate';
+import ModalAddNewUser from './ModalAddNewUser';
 
 function TableUsers(prop) {
     const [listUsers, setListUser] = useState([]);
     // const [totalUser, setTotalUser] = useState(0);
     const [totalPages, setToltalPages] = useState(0);
+    const [isShowModalAddNewUser, setIsShowAddNewUser] = useState(false);
+
+    const handleClose = () => {
+        setIsShowAddNewUser(false);
+    };
+
+    const handleShow = () => {
+        setIsShowAddNewUser(true);
+    };
+
+    const handleUpdateTable = (user) => {
+        setListUser([user, ...listUsers]);
+    };
 
     useEffect(() => {
         getUsers(1);
@@ -14,7 +28,6 @@ function TableUsers(prop) {
 
     const getUsers = async (page) => {
         let res = await fetchAllApi(page);
-        console.log('check respon: ', res);
         if (res && res.data) {
             setListUser(res.data);
             // setTotalUser(res.total);
@@ -28,6 +41,12 @@ function TableUsers(prop) {
 
     return (
         <>
+            <div className="my-3 d-flex justify-content-between">
+                <span>List Users:</span>
+                <button className="btn btn-primary" onClick={handleShow}>
+                    Add user
+                </button>
+            </div>
             <Table striped bordered hover>
                 <thead>
                     <tr>
@@ -70,6 +89,11 @@ function TableUsers(prop) {
                 breakLinkClassName="page-link"
                 containerClassName="pagination"
                 activeClassName="active"
+            />
+            <ModalAddNewUser
+                show={isShowModalAddNewUser}
+                handleClose={handleClose}
+                handleUpdateTable={handleUpdateTable}
             />
         </>
     );

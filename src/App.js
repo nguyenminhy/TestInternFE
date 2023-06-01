@@ -1,35 +1,35 @@
-import { useState } from 'react';
+import { Container } from 'react-bootstrap';
+import { ToastContainer } from 'react-toastify';
+
 import './App.scss';
 import Header from './components/Header';
-import ModalAddNewUser from './components/ModalAddNewUser';
+
 import TableUsers from './components/TableUsers';
-import { Container } from 'react-bootstrap';
 
 function App() {
-    const [isShowModalAddNewUser, setIsShowAddNewUser] = useState(false);
-
-    const handleClose = () => {
-        setIsShowAddNewUser(false);
-    };
-
-    const handleShow = () => {
-        setIsShowAddNewUser(true);
-    };
-
     return (
-        <div className="app-container">
-            <Header />
-            <Container>
-                <div className="my-3 d-flex justify-content-between">
-                    <span>List Users:</span>
-                    <button className="btn btn-primary" onClick={handleShow}>
-                        Add user
-                    </button>
-                </div>
-                <TableUsers />
-            </Container>
-            <ModalAddNewUser show={isShowModalAddNewUser} handleClose={handleClose} />
-        </div>
+        <>
+            <div className="app-container">
+                <Header />
+                <Container>
+                    <TableUsers />
+                </Container>
+            </div>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
+            {/* Same as */}
+            <ToastContainer />
+        </>
     );
 }
 
