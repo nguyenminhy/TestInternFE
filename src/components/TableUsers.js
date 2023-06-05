@@ -3,15 +3,20 @@ import Table from 'react-bootstrap/Table';
 import { fetchAllApi } from '../services/userService';
 import ReactPaginate from 'react-paginate';
 import ModalAddNewUser from './ModalAddNewUser';
+import _ from 'lodash';
 
 function TableUsers(prop) {
     const [listUsers, setListUser] = useState([]);
     // const [totalUser, setTotalUser] = useState(0);
     const [totalPages, setToltalPages] = useState(0);
+
     const [isShowModalAddNewUser, setIsShowAddNewUser] = useState(false);
+    const [isShowModalEdit, setIsShowModalEdit] = useState(false);
+    const [dataUserEdit, setDataUserEdit] = useState({});
 
     const handleClose = () => {
         setIsShowAddNewUser(false);
+        setIsShowModalEdit(false);
     };
 
     const handleShow = () => {
@@ -20,6 +25,19 @@ function TableUsers(prop) {
 
     const handleUpdateTable = (user) => {
         setListUser([user, ...listUsers]);
+    };
+
+    const handleEditUserFromTable = (user) => {
+        let cloneListUsers = _.cloneDeep(listUsers);
+        let index = listUsers.findIndex((item) => item.id === user.id);
+        cloneListUsers[index].first_name = user.name;
+
+        setListUser(cloneListUsers);
+    };
+
+    const handleUpdateUser = (user) => {
+        setDataUserEdit(user);
+        setIsShowModalEdit(true);
     };
 
     useEffect(() => {
@@ -54,6 +72,7 @@ function TableUsers(prop) {
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Email</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,6 +85,12 @@ function TableUsers(prop) {
                                     <td>{item.first_name}</td>
                                     <td>{item.last_name}</td>
                                     <td>{item.email}</td>
+                                    <td>
+                                        <button className="btn btn-warning mx-2" onClick={() => handleUpdateUser(item)}>
+                                            Edit
+                                        </button>
+                                        <button className="btn btn-danger">Delete</button>
+                                    </td>
                                 </tr>
                             );
                         })}
@@ -94,6 +119,15 @@ function TableUsers(prop) {
                 show={isShowModalAddNewUser}
                 handleClose={handleClose}
                 handleUpdateTable={handleUpdateTable}
+                title="Add new User"
+            />
+            <ModalAddNewUser
+                show={isShowModalEdit}
+                handleClose={handleClose}
+                handleEditUserFromTable={handleEditUserFromTable}
+                // handleUpdateTable={handleUpdateTable}
+                dataUserEdit={dataUserEdit}
+                title="Update new User"
             />
         </>
     );

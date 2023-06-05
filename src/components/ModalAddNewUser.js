@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
-import { postCreateUser } from '../services/userService';
+import { postCreateUser, putUpdateUser } from '../services/userService';
 import { toast } from 'react-toastify';
 function ModalAddNewUser(props) {
-    const { show, handleClose, handleUpdateTable } = props;
+    const { show, handleClose, handleUpdateTable, title, dataUserEdit, handleEditUserFromTable } = props;
     const [name, setName] = useState('');
     const [job, setJob] = useState('');
 
+    const nameRef = useRef();
     const handleSaveUser = async () => {
         let res = await postCreateUser(name, job);
         console.log('check: ', res);
@@ -18,15 +19,42 @@ function ModalAddNewUser(props) {
             toast.success('A User created success!');
             handleUpdateTable({ first_name: name, id: res.id });
         } else {
+            // Error
             toast.error('An Error...');
         }
     };
+    const handleUpdateUser = async () => {
+        let res = await putUpdateUser(name, job);
+        if (res && res.updatedAt) {
+            // Success
+            handleEditUserFromTable({
+                name: name,
+                id: dataUserEdit.id,
+            });
+            toast.success('Update user success!');
+        } else {
+            // Error
+            console.log('Error:');
+        }
+        handleClose();
+    };
+    useEffect(() => {
+        if (show) {
+            setName(dataUserEdit.first_name);
+        }
+        // eslint-disable-next-line
+    }, [dataUserEdit]);
+
+    useEffect(() => {
+        console.log(nameRef);
+        // nameRef.current.focus();
+    }, [show]);
 
     return (
         <>
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Add new user</Modal.Title>
+                    <Modal.Title>{title}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div className="body-add-new">
@@ -45,6 +73,7 @@ function ModalAddNewUser(props) {
                                             className="form-control"
                                             value={name}
                                             onChange={(e) => setName(e.target.value)}
+                                            ref={nameRef}
                                         />
                                     </div>
                                 </div>
@@ -74,8 +103,8 @@ function ModalAddNewUser(props) {
                     <Button variant="secondary" onClick={handleClose}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={handleSaveUser}>
-                        Save user
+                    <Button variant="primary" onClick={dataUserEdit ? handleUpdateUser : handleSaveUser}>
+                        {dataUserEdit ? 'Update user' : 'Save user'}
                     </Button>
                 </Modal.Footer>
             </Modal>
