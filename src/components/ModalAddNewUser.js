@@ -45,11 +45,6 @@ function ModalAddNewUser(props) {
         // eslint-disable-next-line
     }, [dataUserEdit]);
 
-    useEffect(() => {
-        console.log(nameRef);
-        // nameRef.current.focus();
-    }, [show]);
-
     return (
         <>
             <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>

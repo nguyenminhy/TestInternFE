@@ -49,8 +49,13 @@ function TableUsers(prop) {
 
     const handleDelete = (user) => {
         setIsShowModalConfirmDelete(true);
-        console.log(user);
         setDataUserDelete(user);
+    };
+
+    const handleDeleteUserFormmodal = (user) => {
+        let cloneListUsers = _.cloneDeep(listUsers);
+        cloneListUsers = cloneListUsers.filter((item) => item.id !== user.id);
+        setListUser(cloneListUsers);
     };
 
     useEffect(() => {
@@ -144,7 +149,12 @@ function TableUsers(prop) {
                 dataUserEdit={dataUserEdit}
                 title="Update new User"
             />
-            <ModalConfirm show={isShowModalConfirmDelete} handleClose={handleClose} dataUserDelete={dataUserDelete} />
+            <ModalConfirm
+                show={isShowModalConfirmDelete}
+                handleClose={handleClose}
+                dataUserDelete={dataUserDelete}
+                handleDeleteUserFormmodal={handleDeleteUserFormmodal}
+            />
         </>
     );
 }
