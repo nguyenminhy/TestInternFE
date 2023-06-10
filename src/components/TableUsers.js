@@ -4,6 +4,7 @@ import { fetchAllApi } from '../services/userService';
 import ReactPaginate from 'react-paginate';
 import ModalAddNewUser from './ModalAddNewUser';
 import _ from 'lodash';
+import ModalConfirm from './ModalConfirm';
 
 function TableUsers(prop) {
     const [listUsers, setListUser] = useState([]);
@@ -11,12 +12,18 @@ function TableUsers(prop) {
     const [totalPages, setToltalPages] = useState(0);
 
     const [isShowModalAddNewUser, setIsShowAddNewUser] = useState(false);
+
     const [isShowModalEdit, setIsShowModalEdit] = useState(false);
     const [dataUserEdit, setDataUserEdit] = useState({});
+
+    const [dataUserDelete, setDataUserDelete] = useState({});
+
+    const [isShowModalConfirmDelete, setIsShowModalConfirmDelete] = useState(false);
 
     const handleClose = () => {
         setIsShowAddNewUser(false);
         setIsShowModalEdit(false);
+        setIsShowModalConfirmDelete(false);
     };
 
     const handleShow = () => {
@@ -38,6 +45,12 @@ function TableUsers(prop) {
     const handleUpdateUser = (user) => {
         setDataUserEdit(user);
         setIsShowModalEdit(true);
+    };
+
+    const handleDelete = (user) => {
+        setIsShowModalConfirmDelete(true);
+        console.log(user);
+        setDataUserDelete(user);
     };
 
     useEffect(() => {
@@ -89,7 +102,9 @@ function TableUsers(prop) {
                                         <button className="btn btn-warning mx-2" onClick={() => handleUpdateUser(item)}>
                                             Edit
                                         </button>
-                                        <button className="btn btn-danger">Delete</button>
+                                        <button className="btn btn-danger" onClick={() => handleDelete(item)}>
+                                            Delete
+                                        </button>
                                     </td>
                                 </tr>
                             );
@@ -129,6 +144,7 @@ function TableUsers(prop) {
                 dataUserEdit={dataUserEdit}
                 title="Update new User"
             />
+            <ModalConfirm show={isShowModalConfirmDelete} handleClose={handleClose} dataUserDelete={dataUserDelete} />
         </>
     );
 }
