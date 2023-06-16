@@ -3,7 +3,7 @@ import Table from 'react-bootstrap/Table';
 import { fetchAllApi } from '../services/userService';
 import ReactPaginate from 'react-paginate';
 import ModalAddNewUser from './ModalAddNewUser';
-import _ from 'lodash';
+import _, { debounce } from 'lodash';
 import ModalConfirm from './ModalConfirm';
 import './TableUser.scss';
 
@@ -69,6 +69,16 @@ function TableUsers(prop) {
         cloneListUser = _.orderBy(cloneListUser, [sortField], [sortBy]);
         setListUser(cloneListUser);
     };
+    const handleSearch = debounce((e) => {
+        let term = e.target.value;
+        if (term) {
+            let cloneListUser = _.cloneDeep(listUsers);
+            cloneListUser = cloneListUser.filter((item) => item.email.includes(term));
+            setListUser(cloneListUser);
+        } else {
+            getUsers(1);
+        }
+    }, 500);
 
     useEffect(() => {
         getUsers(1);
@@ -94,6 +104,9 @@ function TableUsers(prop) {
                 <button className="btn btn-primary" onClick={handleShow}>
                     Add user
                 </button>
+            </div>
+            <div className="cl-4 my-3">
+                <input placeholder="Search by email..." onChange={(e) => handleSearch(e)} />
             </div>
             <Table striped bordered hover>
                 <thead>
