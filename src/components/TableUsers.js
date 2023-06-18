@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
-import { fetchAllApi } from '../services/userService';
 import ReactPaginate from 'react-paginate';
-import ModalAddNewUser from './ModalAddNewUser';
 import _, { debounce } from 'lodash';
+import { CSVLink, CSVDownload } from 'react-csv';
+
+import { fetchAllApi } from '../services/userService';
+import ModalAddNewUser from './ModalAddNewUser';
 import ModalConfirm from './ModalConfirm';
 import './TableUser.scss';
 
@@ -21,7 +23,9 @@ function TableUsers(prop) {
 
     const [isShowModalConfirmDelete, setIsShowModalConfirmDelete] = useState(false);
 
+    // eslint-disable-next-line
     const [sortBy, setSortBy] = useState('asc');
+    // eslint-disable-next-line
     const [sortField, setSortField] = useState('id');
 
     const handleClose = () => {
@@ -97,13 +101,32 @@ function TableUsers(prop) {
         getUsers(+event.selected + 1);
     };
 
+    const csvData = [
+        ['firstname', 'lastname', 'email'],
+        ['Ahmed', 'Tomi', 'ah@smthing.co.com'],
+        ['Raed', 'Labes', 'rl@smthing.co.com'],
+        ['Yezzi', 'Min l3b', 'ymin@cocococo.com'],
+    ];
+
     return (
         <>
-            <div className="my-3 d-flex justify-content-between">
+            <div className="my-3 add-new">
                 <span>List Users:</span>
-                <button className="btn btn-primary" onClick={handleShow}>
-                    Add user
-                </button>
+                <div className="groud-btns">
+                    <label className="btn btn-warning" htmlFor="input-file">
+                        <i class="fa-solid fa-file-import"></i> Import
+                        <input id="input-file" type="file" hidden />
+                    </label>
+
+                    <CSVLink data={csvData} filename={'users'} className="btn btn-primary">
+                        <i className="fa-solid fa-file-arrow-down"></i>
+                        Export
+                    </CSVLink>
+                    <button className="btn btn-primary" onClick={handleShow}>
+                        <i className="fa-solid fa-circle-plus"></i>
+                        Add user
+                    </button>
+                </div>
             </div>
             <div className="cl-4 my-3">
                 <input placeholder="Search by email..." onChange={(e) => handleSearch(e)} />
