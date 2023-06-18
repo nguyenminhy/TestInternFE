@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import ReactPaginate from 'react-paginate';
 import _, { debounce } from 'lodash';
-import { CSVLink, CSVDownload } from 'react-csv';
+import { CSVLink } from 'react-csv';
 
 import { fetchAllApi } from '../services/userService';
 import ModalAddNewUser from './ModalAddNewUser';
@@ -20,6 +20,8 @@ function TableUsers(prop) {
     const [dataUserEdit, setDataUserEdit] = useState({});
 
     const [dataUserDelete, setDataUserDelete] = useState({});
+
+    const [dataExport, setDataExport] = useState([]);
 
     const [isShowModalConfirmDelete, setIsShowModalConfirmDelete] = useState(false);
 
@@ -101,12 +103,23 @@ function TableUsers(prop) {
         getUsers(+event.selected + 1);
     };
 
-    const csvData = [
-        ['firstname', 'lastname', 'email'],
-        ['Ahmed', 'Tomi', 'ah@smthing.co.com'],
-        ['Raed', 'Labes', 'rl@smthing.co.com'],
-        ['Yezzi', 'Min l3b', 'ymin@cocococo.com'],
-    ];
+    const getUserExport = (event, done) => {
+        let result = [];
+        if (listUsers && listUsers.length > 0) {
+            result.push(['Id', 'Email', 'First name', 'Last name']);
+            listUsers.map((user, index) => {
+                let arr = [];
+                arr[0] = user.id;
+                arr[1] = user.email;
+                arr[2] = user.first_name;
+                arr[3] = user.last_name;
+                result.push(arr);
+            });
+
+            setDataExport(result);
+            done();
+        }
+    };
 
     return (
         <>
@@ -118,7 +131,13 @@ function TableUsers(prop) {
                         <input id="input-file" type="file" hidden />
                     </label>
 
-                    <CSVLink data={csvData} filename={'users'} className="btn btn-primary">
+                    <CSVLink
+                        data={dataExport}
+                        filename={'users'}
+                        className="btn btn-primary"
+                        asyncOnClick={true}
+                        onClick={getUserExport}
+                    >
                         <i className="fa-solid fa-file-arrow-down"></i>
                         Export
                     </CSVLink>
