@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { loginApi } from '../services/userService';
 import './login.scss';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../Context/UsersContext';
 
 function Login() {
     const navigate = useNavigate();
@@ -11,12 +12,7 @@ function Login() {
     const [isShowPassword, setIsShowPassword] = useState(false);
     const [loaddingApi, setLoaddingApi] = useState(false);
 
-    useEffect(() => {
-        let token = localStorage.getItem('token');
-        if (token) {
-            navigate('/');
-        }
-    }, []);
+    const { loginContext } = useContext(UserContext);
 
     const handleLogin = async () => {
         if (!email || !password) {
@@ -26,7 +22,7 @@ function Login() {
         setLoaddingApi(true);
         let res = await loginApi(email, password);
         if (res && res.token) {
-            localStorage.setItem('token', res.token);
+            loginContext(email, res.token);
             navigate('/');
         } else {
             // error
@@ -40,7 +36,9 @@ function Login() {
     return (
         <div className="login-container col-12 col-sm-12  col-md-8 col-lg-4 ">
             <div className="title">Login</div>
-            <div className="text">Email or username (eve.holt@reqres.in)</div>
+            <div className="text">
+                Email or username (<span>eve.holt@reqres.in</span>)
+            </div>
             <input
                 className="input"
                 type="text"
@@ -66,9 +64,14 @@ function Login() {
                 onClick={() => handleLogin()}
             >
                 Login &nbsp;
-                {loaddingApi && <i class="fas fa-spinner fa-pulse"></i>}
+                {loaddingApi && <i className="fas fa-spinner fa-pulse"></i>}
             </button>
-            <div className="back">
+            <div
+                className="back"
+                onClick={() => {
+                    navigate('/');
+                }}
+            >
                 <i className="fa-solid fa-chevron-left"></i>Go back
             </div>
         </div>

@@ -1,6 +1,6 @@
 function Home() {
     const list = [
-        { content: 'Đăng nhập', complate: true, complate: false },
+        { content: 'Đăng nhập', complate: true },
         { content: 'Thêm user', complate: true },
         { content: 'Sửa user', complate: true },
         { content: 'Xóa user', complate: true },
@@ -20,6 +20,7 @@ function Home() {
             <br />
             <ul>
                 {list.map((item, index) => (
+                    // eslint-disable-next-line
                     <li key={index} style={item.complate ? { backgroundColor: '#5bc4e7' } : null}>
                         {index + 1}. {item.content}
                     </li>
